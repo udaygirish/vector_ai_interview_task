@@ -21,18 +21,15 @@ class Fashion_Mnist_DL():
                                         transforms.Normalize([0.485, 0.456, 0.406],[0.229, 0.224, 0.225])
                                     ])
         else:
-            transforms_ret = transforms.Compose([transforms.Resize(256),
-                                    transforms.CenterCrop(224), 
-                                    transforms.ToTensor(),
-                                    transforms.Normalize([0.485, 0.456, 0.406],[0.229, 0.224, 0.225])
-                                ])
+            transforms_ret = transform = transforms.Compose([transforms.ToTensor(),
+                                transforms.Normalize((0.5,), (0.5,))])
         return transforms_ret
 
     def prepare_data(self):
-        train_dataset = datasets.FashionMNIST('./data', download=True, train=True, transform=self.data_transforms('train'))
-        validation_dataset = datasets.FashionMNIST('./data', download=True, train=False, transform=self.data_transforms('val'))
+        train_dataset = datasets.FashionMNIST('./data', download=True, train=True, transform=self.data_transforms('na'))
+        validation_dataset = datasets.FashionMNIST('./data', download=True, train=False, transform=self.data_transforms('na'))
         # For code validation purposes test set and val set are same
-        test_dataset = datasets.FashionMNIST('./data', download=True, train=False, transform=self.data_transforms('test'))
+        test_dataset = datasets.FashionMNIST('./data', download=True, train=False, transform=self.data_transforms('na'))
         
         return train_dataset, validation_dataset, test_dataset
 

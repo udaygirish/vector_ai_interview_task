@@ -13,9 +13,9 @@ dataloader = datasetloader.Fashion_Mnist_DL()
 
 train_dataset, val_dataset, test_dataset = dataloader.prepare_data()
 
-train_dataloader = dataloader.create_dataloader(train_dataset, use_tpu=False, batch_size=8)
-val_dataloader = dataloader.create_dataloader(val_dataset, use_tpu=False, batch_size=8)
-test_dataloader = dataloader.create_dataloader(test_dataset, use_tpu=False, batch_size=8)
+train_dataloader = dataloader.create_dataloader(train_dataset, use_tpu=False, batch_size=32)
+val_dataloader = dataloader.create_dataloader(val_dataset, use_tpu=False, batch_size=32)
+test_dataloader = dataloader.create_dataloader(test_dataset, use_tpu=False, batch_size=32)
 
 
 trainer = Trainer(gpus=1, max_epochs=5)
