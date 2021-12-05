@@ -34,12 +34,12 @@ class Custom_CNN1(nn.Module):
     def __init__(self, num_classes:int):
         super(Custom_CNN1, self).__init__()
 
-        self.convlayer1 = nn.Sequential(nn.Conv2d(1, 32, 3, padding= 1), nn.ReLU(), nn.BatchNorm2d(32))
-        self.convlayer2 = nn.Sequential(nn.Conv2d(32,64,3,padding =1), nn.ReLU(), nn.BatchNorm2d(64))
-        self.convlayer3 = nn.Sequential(nn.Conv2d(64,64,3, padding=1), nn.ReLU(), nn.BatchNorm2d(64), nn.MaxPool2d(kernel_size=2, stride=1))
+        self.convlayer1 = nn.Sequential(nn.Conv2d(1, 32, 3, padding=1), nn.ReLU(), nn.BatchNorm2d(32))
+        self.convlayer2 = nn.Sequential(nn.Conv2d(32,16,3,padding =1), nn.ReLU(), nn.BatchNorm2d(16))
+        self.convlayer3 = nn.Sequential(nn.Conv2d(16,8,3, padding=1), nn.ReLU(), nn.BatchNorm2d(8), nn.MaxPool2d(kernel_size=2, stride=2))
         self.dropout1 = nn.Dropout2d(0.25)
         self.flatten = nn.Flatten()
-        self.fc1 = nn.Sequential(nn.Linear(64*6*6, 512), nn.ReLU())
+        self.fc1 = nn.Sequential(nn.Linear(1568, 512), nn.ReLU())
         self.dropout2 = nn.Dropout2d(0.3)
         self.fc2 = nn.Linear(512,num_classes)
 
@@ -48,6 +48,8 @@ class Custom_CNN1(nn.Module):
         x = self.convlayer2(x)
         x = self.convlayer3(x)
         x = self.dropout1(x)
+        #x = self.flatten(x)
+        x = x.view(-1, 1568)
         x = self.fc1(x)
         x = self.dropout2(x)
         x = self.fc2(x)
@@ -66,7 +68,7 @@ class PretainedModels_Finetuning():
 
         
 
-    def set_parameter_requires_grad(model, feature_extracting):
+    def set_parameter_requires_grad(self,model, feature_extracting):
         if feature_extracting:
             for param in model.parameters():
                 param.requires_grad = False
@@ -80,7 +82,7 @@ class PretainedModels_Finetuning():
             """ Resnet18
             """
             model_ft = models.resnet18(pretrained=use_pretrained)
-            self.parameter_requires_grad(model_ft, feature_extract)
+            self.set_parameter_requires_grad(model_ft, feature_extract)
             num_ftrs = model_ft.fc.in_features
             model_ft.fc = nn.Linear(num_ftrs, num_classes)
             input_size = 224
@@ -89,7 +91,7 @@ class PretainedModels_Finetuning():
             """ Alexnet
             """
             model_ft = models.alexnet(pretrained=use_pretrained)
-            self.parameter_requires_grad(model_ft, feature_extract)
+            self.set_parameter_requires_grad(model_ft, feature_extract)
             num_ftrs = model_ft.classifier[6].in_features
             model_ft.classifier[6] = nn.Linear(num_ftrs,num_classes)
             input_size = 224
@@ -98,7 +100,7 @@ class PretainedModels_Finetuning():
             """ VGG11_bn
             """
             model_ft = models.vgg11_bn(pretrained=use_pretrained)
-            self.parameter_requires_grad(model_ft, feature_extract)
+            self.set_parameter_requires_grad(model_ft, feature_extract)
             num_ftrs = model_ft.classifier[6].in_features
             model_ft.classifier[6] = nn.Linear(num_ftrs,num_classes)
             input_size = 224
@@ -107,7 +109,7 @@ class PretainedModels_Finetuning():
             """ Squeezenet
             """
             model_ft = models.squeezenet1_0(pretrained=use_pretrained)
-            self.parameter_requires_grad(model_ft, feature_extract)
+            self.set_parameter_requires_grad(model_ft, feature_extract)
             model_ft.classifier[1] = nn.Conv2d(512, num_classes, kernel_size=(1,1), stride=(1,1))
             model_ft.num_classes = num_classes
             input_size = 224
@@ -116,7 +118,7 @@ class PretainedModels_Finetuning():
             """ Densenet
             """
             model_ft = models.densenet121(pretrained=use_pretrained)
-            self.parameter_requires_grad(model_ft, feature_extract)
+            self.set_parameter_requires_grad(model_ft, feature_extract)
             num_ftrs = model_ft.classifier.in_features
             model_ft.classifier = nn.Linear(num_ftrs, num_classes)
             input_size = 224
@@ -126,7 +128,7 @@ class PretainedModels_Finetuning():
             Be careful, expects (299,299) sized images and has auxiliary output
             """
             model_ft = models.inception_v3(pretrained=use_pretrained)
-            self.parameter_requires_grad(model_ft, feature_extract)
+            self.self.set_parameter_requires_grad(model_ft, feature_extract)
             # Handle the auxilary net
             num_ftrs = model_ft.AuxLogits.fc.in_features
             model_ft.AuxLogits.fc = nn.Linear(num_ftrs, num_classes)
@@ -140,11 +142,12 @@ class PretainedModels_Finetuning():
             exit()
 
         self.model_ft = model_ft
+        self.model_ft.to('cuda:0')
         self.input_size =  input_size
 
 
     def forward(self,x):
-        output = self.models(x)
+        output = self.model_ft(x)
         return output
 
 
