@@ -20,5 +20,5 @@ test_dataloader = dataloader.create_dataloader(test_dataset, use_tpu=False, batc
 
 trainer = Trainer(gpus=1, max_epochs=5)
 
-trainer.fit(trainer_model, train_dataloader, val_dataloader, test_dataloader)
+trainer.fit(trainer_model, train_dataloader, val_dataloader)
 
