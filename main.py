@@ -7,8 +7,8 @@ from torchvision import datasets,transforms
 from lib import datasetloader, nets, utils
 from pytorch_lightning import Trainer
 
-trainer_model = utils.ModelTrainer('custom1', 10, True, 'custom1', True)
-transform_method = 'na'
+trainer_model = utils.ModelTrainer('custom', 10, False, 'custom', True)
+transform_method = 'custom'
 if transform_method == 'pretrained_finetune':
     input_size_int = trainer_model.base_class.input_size
     input_size = (input_size_int, input_size_int)
@@ -29,3 +29,4 @@ trainer = Trainer(gpus=1, max_epochs=15, logger=tb_logger)
 
 trainer.fit(trainer_model, train_dataloader, val_dataloader)
 
+torch.save(trainer.model.state_dict(), 'model_custom.pth')

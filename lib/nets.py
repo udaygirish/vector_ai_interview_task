@@ -17,6 +17,7 @@ class Custom_CNN(nn.Module):
         self.fc2 = nn.Linear(600,120)
         self.fc3 = nn.Linear(120,num_classes)
 
+
     def forward(self,x):
         x = self.convlayer1(x)
         x = self.convlayer2(x)
