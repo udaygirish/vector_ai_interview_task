@@ -8,7 +8,6 @@ import os
 import sys
 import logging
 import fastapi
-import pydantic
 from typing import Optional, List, Dict, Any
 import uvicorn
 

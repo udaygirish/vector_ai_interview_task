@@ -14,6 +14,7 @@ from torchmetrics import (
 
 
 class ModelTrainer(pl.LightningModule):
+    
     def __init__(
         self, model_name, num_classes, feature_extract, model_class, use_pretrained=True
     ):
