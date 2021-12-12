@@ -79,14 +79,14 @@ def main():
 
     args = parser.parse_args()
     trainer_model = utils.ModelTrainer(
-        args["model_name"],
-        args["nc"],
-        args["feature_extract"],
-        args["model_class"],
+        args.model_name,
+        args.nc,
+        args.feature_extract,
+        args.model_class,
         True,
     )
-    transform_method = args["transform_method"]
-    dataset_path = args["dataset_path"]
+    transform_method = args.transform_method
+    dataset_path = args.dataset_path
 
     if transform_method == "pretrained_finetune":
         input_size_int = trainer_model.base_class.input_size
@@ -104,10 +104,10 @@ def main():
     )
 
     train_dataloader = dataloader.create_dataloader(
-        train_dataset, use_tpu=False, batch_size=args["batchsize"]
+        train_dataset, use_tpu=False, batch_size=args.batchsize
     )
     val_dataloader = dataloader.create_dataloader(
-        val_dataset, use_tpu=False, batch_size=args["batchsize"]
+        val_dataset, use_tpu=False, batch_size=args.batchsize
     )
     # test_dataloader = dataloader.create_dataloader(test_dataset, use_tpu=False, batch_size=32)
 
@@ -115,11 +115,11 @@ def main():
     tb_logger = pl.loggers.TensorBoardLogger("logs/")
 
     # MULTI GPU AND PARALLEL TRAINING USING DDP WITH PYTORCH LIGHTNING YET TO BE IMPLEMENTED
-    trainer = Trainer(gpus=1, max_epochs=args["max_epoch"], logger=tb_logger)
+    trainer = Trainer(gpus=0, max_epochs=int(args.max_epoch), logger=tb_logger)
 
     trainer.fit(trainer_model, train_dataloader, val_dataloader)
 
-    torch.save(trainer.model.state_dict(), args["model_output"])
+    torch.save(trainer.model.state_dict(), args.model_output)
 
 
 if __name__ == "__main__":

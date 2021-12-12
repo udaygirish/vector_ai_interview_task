@@ -46,6 +46,7 @@ class ModelTrainer(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         images, target = batch
+        print(images.shape)
         preds = self.base_class.forward(images)
         loss = F.cross_entropy(preds, target)
         accuracy = self.accuracy(preds, target)
